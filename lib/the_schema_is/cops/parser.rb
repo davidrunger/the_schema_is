@@ -69,9 +69,9 @@ module TheSchemaIs
         table_name = definition_node.ast_search('(send self :table_name= (str $_))')&.last
 
         Model.new(
-          class_name: class_name,
+          class_name:,
           table_name: table_name ||
-            table_prefix.+(ActiveSupport::Inflector.tableize(class_name)),
+            (table_prefix + ActiveSupport::Inflector.tableize(class_name)),
           source: definition_node,
           schema: schema_node,
           table_name_node: name_node&.first
@@ -90,10 +90,10 @@ module TheSchemaIs
           # FIXME: Of course it should be easier to say "optional additional params"
           if (type, name, defs =
                 node.ast_match('(send {(send nil? :t) (lvar :t)} $_ (str $_) $_)'))
-            Column.new(name: name, type: type, definition: defs, source: node) \
+            Column.new(name:, type:, definition: defs, source: node) \
               if COLUMN_DEFS.include?(type)
           elsif (type, name = node.ast_match('(send {(send nil? :t) (lvar :t)} $_ (str $_))'))
-            Column.new(name: name, type: type, source: node) if COLUMN_DEFS.include?(type)
+            Column.new(name:, type:, source: node) if COLUMN_DEFS.include?(type)
           end
         }.compact
       end
