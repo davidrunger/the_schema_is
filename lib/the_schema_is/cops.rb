@@ -20,7 +20,7 @@ module TheSchemaIs
       prepend MemoWise
 
       memo_wise def fetch_schema(path, remove_definition_attrs: [])
-        Cops::Parser.schema(path, remove_definition_attrs: remove_definition_attrs)
+        Cops::Parser.schema(path, remove_definition_attrs:)
       end
     end
   end
@@ -100,7 +100,7 @@ module TheSchemaIs
           "the_schema_is #{model.table_name.to_s.inspect} do |t|",
           *schema_columns.map { |_, col| "  #{col.source.loc.expression.source}" },
           'end'
-        ].map { |s| ' ' * indent + s }.join("\n").then { |s| "\n#{s}\n" }
+        ].map { |s| (' ' * indent) + s }.join("\n").then { |s| "\n#{s}\n" }
 
         # in "class User < ActiveRecord::Base" -- second child is "ActiveRecord::Base"
         corrector.insert_after(node.children[1].loc.expression, code)
@@ -190,7 +190,7 @@ module TheSchemaIs
     def register_offense(_node)
       return if model.schema.nil? || schema.nil?
 
-      extra_columns.each do |_, col|
+      extra_columns.each_value do |col|
         add_offense(col.source, message: MSG % col.name) do |corrector|
           src_range = col.source.loc.expression
           end_pos = col.source.next_sibling.then { |n|
@@ -233,7 +233,7 @@ module TheSchemaIs
         .reject { |mcol, scol|
           # When column is not in schema, we shouldn't try to check it: UnknownColumn cop will
           # handle.
-          !scol || mcol.type == scol.type && mcol.definition_source == scol.definition_source
+          !scol || (mcol.type == scol.type && mcol.definition_source == scol.definition_source)
         }
     end
   end
