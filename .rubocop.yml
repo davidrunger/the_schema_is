@@ -16,7 +16,7 @@ AllCops:
 
 Layout/LineLength:
   Max: 100
-  IgnoredPatterns: ['\#.*'] # ignore long comments
+  AllowedPatterns: ['\#.*'] # ignore long comments
 
 Style/AndOr:
   EnforcedStyle: conditionals
