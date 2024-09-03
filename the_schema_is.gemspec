@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubocop', '>= 1.0.0'
   s.add_runtime_dependency 'activesupport' # it is a plugin for ActiveRecord anyways, and we need perfectly same inflection
   s.add_runtime_dependency 'memoist'
+  s.add_runtime_dependency 'memo_wise'
 
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'rake'

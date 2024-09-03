@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'memoist'
+require 'memo_wise'
 require 'rubocop'
 require 'backports/latest'
 
@@ -16,9 +17,9 @@ module TheSchemaIs
 
   module Cops
     class << self
-      extend Memoist
+      prepend MemoWise
 
-      memoize def fetch_schema(path, remove_definition_attrs: [])
+      memo_wise def fetch_schema(path, remove_definition_attrs: [])
         Cops::Parser.schema(path, remove_definition_attrs: remove_definition_attrs)
       end
     end
