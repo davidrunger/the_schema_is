@@ -17,7 +17,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   shared_examples 'autocorrect' do |from, to|
     subject { autocorrect_source(from) }
 
-    it { is_expected.to eq to }
+    it { is_expected.to eq(to) }
   end
 
   context 'when schema.rb can not be found'
@@ -264,76 +264,79 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
       # FIXME: Somehow expect_correction doesn't work here...
     }
 
-    it_behaves_like 'autocorrect', <<~SRC_RUBY,
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          t.integer  "user_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+    it_behaves_like 'autocorrect',
+      <<~SRC_RUBY,
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            t.integer  "user_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    SRC_RUBY
-    <<~DST_RUBY
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          t.integer  "user_id"
-          t.integer  "article_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+      SRC_RUBY
+      <<~DST_RUBY
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            t.integer  "user_id"
+            t.integer  "article_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    DST_RUBY
+      DST_RUBY
 
     # First column
-    it_behaves_like 'autocorrect', <<~SRC_RUBY,
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.integer  "user_id"
-          t.integer  "article_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+    it_behaves_like 'autocorrect',
+      <<~SRC_RUBY,
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.integer  "user_id"
+            t.integer  "article_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    SRC_RUBY
-    <<~DST_RUBY
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          t.integer  "user_id"
-          t.integer  "article_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+      SRC_RUBY
+      <<~DST_RUBY
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            t.integer  "user_id"
+            t.integer  "article_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    DST_RUBY
+      DST_RUBY
 
-    it_behaves_like 'autocorrect', <<~SRC_RUBY,
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          # Comments and spaces are important
-          t.integer  "user_id"
-          t.integer  "article_id"
+    it_behaves_like 'autocorrect',
+      <<~SRC_RUBY,
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            # Comments and spaces are important
+            t.integer  "user_id"
+            t.integer  "article_id"
 
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    SRC_RUBY
-    <<~DST_RUBY
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          # Comments and spaces are important
-          t.integer  "user_id"
-          t.integer  "article_id"
+      SRC_RUBY
+      <<~DST_RUBY
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            # Comments and spaces are important
+            t.integer  "user_id"
+            t.integer  "article_id"
 
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    DST_RUBY
+      DST_RUBY
 
     # TODO: Several columns, including subsequent ones!
   end
@@ -369,7 +372,8 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
       RUBY
     }
 
-    it_behaves_like 'autocorrect', <<~SRC_RUBY,
+    it_behaves_like 'autocorrect',
+      <<~SRC_RUBY,
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
             t.text     "body"
@@ -380,20 +384,21 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             t.datetime "updated_at", null: false
           end
         end
-    SRC_RUBY
-    <<~DST_RUBY
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          t.integer  "user_id"
-          t.integer  "article_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+      SRC_RUBY
+      <<~DST_RUBY
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            t.integer  "user_id"
+            t.integer  "article_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    DST_RUBY
+      DST_RUBY
 
-    it_behaves_like 'autocorrect', <<~SRC_RUBY,
+    it_behaves_like 'autocorrect',
+      <<~SRC_RUBY,
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
             t.text     "body"
@@ -404,18 +409,18 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             t.integer  "owner_id"
           end
         end
-    SRC_RUBY
-    <<~DST_RUBY
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          t.integer  "user_id"
-          t.integer  "article_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+      SRC_RUBY
+      <<~DST_RUBY
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            t.integer  "user_id"
+            t.integer  "article_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    DST_RUBY
+      DST_RUBY
   end
 
   describe TheSchemaIs::WrongColumnDefinition do
@@ -479,7 +484,8 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
       RUBY
     }
 
-    it_behaves_like 'autocorrect', <<~SRC_RUBY,
+    it_behaves_like 'autocorrect',
+      <<~SRC_RUBY,
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
             t.text     "body"
@@ -489,18 +495,18 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             t.datetime "updated_at"
           end
         end
-    SRC_RUBY
-    <<~DST_RUBY
-      class Comment < ApplicationRecord
-        the_schema_is "comments" do |t|
-          t.text     "body"
-          t.integer  "user_id"
-          t.integer  "article_id"
-          t.datetime "created_at", null: false
-          t.datetime "updated_at", null: false
+      SRC_RUBY
+      <<~DST_RUBY
+        class Comment < ApplicationRecord
+          the_schema_is "comments" do |t|
+            t.text     "body"
+            t.integer  "user_id"
+            t.integer  "article_id"
+            t.datetime "created_at", null: false
+            t.datetime "updated_at", null: false
+          end
         end
-      end
-    DST_RUBY
+      DST_RUBY
 
     context 'with schema with many details' do
       let(:real_config) { {Schema: 'db/schema_with_indexes.rb'} }
@@ -524,7 +530,8 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
         RUBY
       }
 
-      it_behaves_like 'autocorrect', <<~SRC_RUBY,
+      it_behaves_like 'autocorrect',
+        <<~SRC_RUBY,
           class Articles < ApplicationRecord
             the_schema_is "articles" do |t|
               t.string   "title"
@@ -537,7 +544,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
               t.datetime "updated_at",      null: false
             end
           end
-      SRC_RUBY
+        SRC_RUBY
         <<~DST_RUBY
           class Articles < ApplicationRecord
             the_schema_is "articles" do |t|
@@ -574,7 +581,8 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           RUBY
         }
 
-        it_behaves_like 'autocorrect', <<~SRC_RUBY,
+        it_behaves_like 'autocorrect',
+          <<~SRC_RUBY,
             class Articles < ApplicationRecord
               the_schema_is "articles" do |t|
                 t.string   "title"
@@ -587,7 +595,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
                 t.datetime "updated_at",      null: false
               end
             end
-        SRC_RUBY
+          SRC_RUBY
           <<~DST_RUBY
             class Articles < ApplicationRecord
               the_schema_is "articles" do |t|
@@ -603,7 +611,8 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             end
           DST_RUBY
 
-        it_behaves_like 'autocorrect', <<~SRC_RUBY,
+        it_behaves_like 'autocorrect',
+          <<~SRC_RUBY,
             class Articles < ApplicationRecord
               the_schema_is "articles" do |t|
                 t.string   "title"
@@ -616,7 +625,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
                 t.datetime "updated_at",      null: false
               end
             end
-        SRC_RUBY
+          SRC_RUBY
           <<~DST_RUBY
             class Articles < ApplicationRecord
               the_schema_is "articles" do |t|

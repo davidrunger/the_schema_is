@@ -9,4 +9,5 @@ group :test do
   gem 'rspec-its'
   gem 'saharspec'
   gem 'byebug'
+  gem 'runger_style', require: false
 end

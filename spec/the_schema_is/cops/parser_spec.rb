@@ -14,60 +14,60 @@ RSpec.describe TheSchemaIs::Cops::Parser do
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User
-      end
+        class User
+        end
       RUBY
       nil
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User < ActiveRecord::Base
-      end
+        class User < ActiveRecord::Base
+        end
       RUBY
       {class_name: 'User', table_name: 'users', schema: nil}
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User < ActiveRecord::Base
-        class NestedOnly
+        class User < ActiveRecord::Base
+          class NestedOnly
+          end
         end
-      end
       RUBY
       nil
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User < ActiveRecord::Base
-        self.table_name = 'authors'
-      end
+        class User < ActiveRecord::Base
+          self.table_name = 'authors'
+        end
       RUBY
       {class_name: 'User', table_name: 'authors', schema: nil}
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User < ActiveRecord::Base
-        the_schema_is do |t|
-          t.string "name"
+        class User < ActiveRecord::Base
+          the_schema_is do |t|
+            t.string "name"
+          end
         end
-      end
       RUBY
       {class_name: 'User', table_name: 'users', schema: Parser::AST::Node}
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User < ApplicationRecord
-        the_schema_is do |t|
-          t.string "name"
+        class User < ApplicationRecord
+          the_schema_is do |t|
+            t.string "name"
+          end
         end
-      end
       RUBY
       {class_name: 'User', table_name: 'users', schema: Parser::AST::Node}
 
     it_behaves_like 'model extractor',
       <<~RUBY,
-      class User < ActiveRecord::Base
-        self.abstract_class = true
-      end
+        class User < ActiveRecord::Base
+          self.abstract_class = true
+        end
       RUBY
       nil
   end
@@ -79,7 +79,7 @@ RSpec.describe TheSchemaIs::Cops::Parser do
 
     it { is_expected.to be_a(Hash) }
     its(:keys) { is_expected.to start_with('articles', 'comments', 'favorites') }
-    its(:values) { is_expected.to all be_a Parser::AST::Node }
+    its(:values) { is_expected.to all(be_a(Parser::AST::Node)) }
   end
 
   describe '.columns' do
