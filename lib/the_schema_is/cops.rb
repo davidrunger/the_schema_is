@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'memoist'
-require 'memo_wise'
-require 'rubocop'
 require 'backports/latest'
+require 'memo_wise'
+require 'memoist'
+require 'rubocop'
 
-require_relative 'cops/node_util'
 require_relative 'cops/inject'
+require_relative 'cops/node_util'
 
 TheSchemaIs::Cops::Inject.defaults!
 
@@ -36,9 +36,11 @@ module TheSchemaIs
     end
 
     def on_class(node)
-      @model = Cops::Parser.model(node,
-                                  base_classes: cop_config.fetch('BaseClass'),
-                                  table_prefix: cop_config['TablePrefix']) or return
+      @model = Cops::Parser.model(
+        node,
+        base_classes: cop_config.fetch('BaseClass'),
+        table_prefix: cop_config['TablePrefix'],
+      ) or return
 
       register_offense(node)
     end
@@ -70,8 +72,8 @@ module TheSchemaIs
     end
 
     memoize def model_columns
-      statements = model.schema.ast_search('(block (send nil? :the_schema_is _?) _ $...)')
-                        .last.last
+      statements = model.schema.ast_search('(block (send nil? :the_schema_is _?) _ $...)').
+        last.last
 
       Cops::Parser.columns(statements).to_h { |col| [col.name, col] }
     end
@@ -99,7 +101,7 @@ module TheSchemaIs
         code = [
           "the_schema_is #{model.table_name.to_s.inspect} do |t|",
           *schema_columns.map { |_, col| "  #{col.source.loc.expression.source}" },
-          'end'
+          'end',
         ].map { |s| (' ' * indent) + s }.join("\n").then { |s| "\n#{s}\n" }
 
         # in "class User < ActiveRecord::Base" -- second child is "ActiveRecord::Base"
@@ -127,9 +129,14 @@ module TheSchemaIs
           corrector.insert_after(model.schema.children[0].loc.expression, " #{model.table_name.to_s.inspect}")
         end
       elsif model.table_name_node.children[0] != model.table_name
-        add_offense(model.table_name_node,
-                    message: MSG_WRONG_TABLE_NAME % model.table_name) do |corrector|
-          corrector.replace(model.table_name_node.loc.expression, model.table_name.to_s.inspect)
+        add_offense(
+          model.table_name_node,
+          message: MSG_WRONG_TABLE_NAME % model.table_name,
+        ) do |corrector|
+          corrector.replace(
+            model.table_name_node.loc.expression,
+            model.table_name.to_s.inspect,
+          )
         end
       end
     end
@@ -154,22 +161,22 @@ module TheSchemaIs
     end
 
     def insert_column(corrector, name, col)
-      prev_statement = model_columns
-                       .slice(*schema_columns.keys[0...schema_columns.keys.index(name)])
-                       .values.last&.source
+      prev_statement = model_columns.
+        slice(*schema_columns.keys[0...schema_columns.keys.index(name)]).
+        values.last&.source
 
       if prev_statement
         indent = prev_statement.loc.expression.column
         corrector.insert_after(
           prev_statement.loc.expression,
-          "\n#{' ' * indent}#{col.source.loc.expression.source}"
+          "\n#{' ' * indent}#{col.source.loc.expression.source}",
         )
       else
         indent = model.schema.loc.expression.column + 2
         corrector.insert_after(
           # of "the_schema_is do |t|" -- children[1] is "|t|""
           model.schema.children[1].loc.expression,
-          "\n#{' ' * indent}#{col.source.loc.expression.source}"
+          "\n#{' ' * indent}#{col.source.loc.expression.source}",
         )
       end
     end
@@ -193,9 +200,10 @@ module TheSchemaIs
       extra_columns.each_value do |col|
         add_offense(col.source, message: MSG % col.name) do |corrector|
           src_range = col.source.loc.expression
-          end_pos = col.source.next_sibling.then { |n|
-            n ? n.loc.expression.begin_pos - 2 : col.source.find_parent(:block).loc.end.begin_pos
-          }
+          end_pos =
+            col.source.next_sibling.then { |n|
+              n ? n.loc.expression.begin_pos - 2 : col.source.find_parent(:block).loc.end.begin_pos
+            }
           range =
             ::Parser::Source::Range.new(src_range.source_buffer, src_range.begin_pos - 2, end_pos)
           corrector.remove(range)
@@ -219,8 +227,8 @@ module TheSchemaIs
     def register_offense(_node)
       return if model.schema.nil? || schema.nil?
 
-      wrong_columns
-        .each do |mcol, scol|
+      wrong_columns.
+        each do |mcol, scol|
           add_offense(mcol.source, message: MSG % scol.source.loc.expression.source) do |corrector|
             corrector.replace(mcol.source.loc.expression, scol.source.loc.expression.source)
           end
@@ -228,9 +236,9 @@ module TheSchemaIs
     end
 
     def wrong_columns
-      model_columns
-        .map { |name, col| [col, schema_columns[name]] }
-        .reject { |mcol, scol|
+      model_columns.
+        map { |name, col| [col, schema_columns[name]] }.
+        reject { |mcol, scol|
           # When column is not in schema, we shouldn't try to check it: UnknownColumn cop will
           # handle.
           !scol || (mcol.type == scol.type && mcol.definition_source == scol.definition_source)

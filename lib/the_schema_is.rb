@@ -2,11 +2,9 @@
 
 require 'active_support'
 
-module TheSchemaIs
-  module DSL
-    # Just a no-op!
-    def the_schema_is(*); end
-  end
+module TheSchemaIs::DSL
+  # Just a no-op!
+  def the_schema_is(*); end
 end
 
 ActiveSupport.on_load(:active_record) do
