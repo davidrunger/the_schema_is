@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+module TheSchemaIs::Cops
+end
+
 # copy-paste from https://github.com/rubocop-hq/rubocop-rspec/blob/master/lib/rubocop/rspec/inject.rb
 # ...and other projects in rubocop-hq :shrug:
 # Because RuboCop doesn't yet support plugins, we have to monkey patch in a

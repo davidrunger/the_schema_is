@@ -3,7 +3,7 @@
 require 'active_support/inflector'
 
 module TheSchemaIs::Cops::Parser
-  using NodeRefinements
+  using TheSchemaIs::Cops::NodeRefinements
 
   # See https://github.com/rails/rails/blob/f33d52c95217212cbacc8d5e44b5a8e3cdc6f5b3/activerecord/lib/active_record/connection_adapters/abstract/schema_definitions.rb#L217
   # TODO: numeric is just an alias for decimal

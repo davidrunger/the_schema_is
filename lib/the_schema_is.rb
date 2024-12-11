@@ -2,6 +2,9 @@
 
 require 'active_support'
 
+module TheSchemaIs
+end
+
 module TheSchemaIs::DSL
   # Just a no-op!
   def the_schema_is(*); end
