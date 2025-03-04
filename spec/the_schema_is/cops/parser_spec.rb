@@ -73,12 +73,12 @@ RSpec.describe TheSchemaIs::Cops::Parser do
   end
 
   describe '.schema' do
-    subject { described_class.schema(path) }
+    subject(:schema) { described_class.schema(path) }
 
     let(:path) { 'spec/fixtures/base/db/schema.rb' }
 
     it do
-      expect(subject).to be_a(Hash)
+      expect(schema).to be_a(Hash)
     end
 
     its(:keys) do
