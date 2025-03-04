@@ -4,6 +4,10 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'rubocop-rspec'
+gem 'rake'
+gem 'rubygems-tasks'
+
 group :test do
   gem 'rspec'
   gem 'rspec-its'
