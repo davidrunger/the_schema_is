@@ -10,9 +10,6 @@ inherit_gem:
     - rulesets/rspec.yml
 
 AllCops:
-  Include:
-    - 'lib/**/*.rb'
-    - 'spec/**/*.rb'
   Exclude:
     - 'spec/fixtures/**/*.rb'
     - 'spec/spec_helper.rb'
