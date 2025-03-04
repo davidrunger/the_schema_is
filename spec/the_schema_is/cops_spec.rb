@@ -10,9 +10,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   let(:target_dir) { File.expand_path('../fixtures/base', __dir__) }
 
   # FIXME: Or just use FakeFS to easier show it the schema?..
-  around { |example|
+  around do |example|
     Dir.chdir(target_dir) { example.run }
-  }
+  end
 
   shared_examples 'autocorrect' do |from, to|
     subject { autocorrect_source(from) }
@@ -23,14 +23,14 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   context 'when schema.rb can not be found'
 
   describe TheSchemaIs::Presence do
-    specify {
+    specify do
       expect_no_offenses(<<~RUBY)
         class Comment
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The schema is not specified in the model (use the_schema_is statement)
@@ -49,16 +49,16 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
 
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord; end
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The schema is not specified in the model (use the_schema_is statement)
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Dog < ApplicationRecord
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Table "dogs" is not defined in db/schema.rb
@@ -70,22 +70,22 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
       RUBY
 
       expect_no_corrections
-    }
+    end
 
     # Model used only for namespacing, shouldn't have schema described!
-    specify {
+    specify do
       expect_no_offenses(<<~RUBY)
         class Comment < ApplicationRecord
           class Nested
           end
         end
       RUBY
-    }
+    end
 
     context 'with different schema' do
       let(:real_config) { {Schema: 'db/schema2.rb'} }
 
-      specify {
+      specify do
         expect_no_offenses(<<~RUBY)
           class Dog < ApplicationRecord
             the_schema_is "dogs" do
@@ -93,7 +93,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             end
           end
         RUBY
-      }
+      end
 
       specify {
         expect_offense(<<~RUBY)
@@ -111,12 +111,12 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
     context 'with different base class' do
       let(:real_config) { {BaseClass: ['Base']} }
 
-      specify {
+      specify do
         expect_no_offenses(<<~RUBY)
           class Comment < ApplicationRecord
           end
         RUBY
-      }
+      end
 
       specify {
         expect_offense(<<~RUBY)
@@ -143,7 +143,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
     context 'with table prefix' do
       let(:real_config) { {TablePrefix: 'prefixed_'} }
 
-      specify {
+      specify do
         expect_no_offenses(<<~RUBY)
           class Tag < ApplicationRecord
             the_schema_is "tags" do
@@ -151,7 +151,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             end
           end
         RUBY
-      }
+      end
 
       specify {
         expect_offense(<<~RUBY)
@@ -164,7 +164,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   end
 
   describe TheSchemaIs::WrongTableName do
-    specify {
+    specify do
       expect_no_offenses(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -176,9 +176,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "cmnts" do |t|
@@ -203,7 +203,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
     specify {
       expect_offense(<<~RUBY)
@@ -234,7 +234,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   end
 
   describe TheSchemaIs::MissingColumn do
-    specify {
+    specify do
       expect_no_offenses(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -246,9 +246,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -262,7 +262,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
       RUBY
 
       # FIXME: Somehow expect_correction doesn't work here...
-    }
+    end
 
     it_behaves_like 'autocorrect',
       <<~SRC_RUBY,
@@ -342,7 +342,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   end
 
   describe TheSchemaIs::UnknownColumn do
-    specify {
+    specify do
       expect_no_offenses(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -354,9 +354,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -370,7 +370,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
     it_behaves_like 'autocorrect',
       <<~SRC_RUBY,
@@ -424,7 +424,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
   end
 
   describe TheSchemaIs::WrongColumnDefinition do
-    specify {
+    specify do
       expect_no_offenses(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -436,9 +436,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -451,9 +451,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       expect_offense(<<~RUBY)
         class Comment < ApplicationRecord
           the_schema_is "comments" do |t|
@@ -466,9 +466,9 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
-    specify {
+    specify do
       # Shouldn't try to fail on unknown column, that's what UnknownColumn cop is for...
       expect_no_offenses(<<~RUBY)
         class Comment < ApplicationRecord
@@ -482,7 +482,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
           end
         end
       RUBY
-    }
+    end
 
     it_behaves_like 'autocorrect',
       <<~SRC_RUBY,
@@ -511,7 +511,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
     context 'with schema with many details' do
       let(:real_config) { {Schema: 'db/schema_with_indexes.rb'} }
 
-      specify {
+      specify do
         expect_offense(<<~RUBY)
           class Articles < ApplicationRecord
             the_schema_is "articles" do |t|
@@ -528,7 +528,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
             end
           end
         RUBY
-      }
+      end
 
       it_behaves_like 'autocorrect',
         <<~SRC_RUBY,
@@ -563,7 +563,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
       context 'with setting to ignore some keys' do
         let(:real_config) { super().merge(RemoveDefinitions: %w[index foreign_key]) }
 
-        specify {
+        specify do
           expect_offense(<<~RUBY)
             class Articles < ApplicationRecord
               the_schema_is "articles" do |t|
@@ -579,7 +579,7 @@ RSpec.describe TheSchemaIs::Cops, :config_ns do
               end
             end
           RUBY
-        }
+        end
 
         it_behaves_like 'autocorrect',
           <<~SRC_RUBY,

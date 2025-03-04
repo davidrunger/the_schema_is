@@ -69,7 +69,7 @@ module TheSchemaIs::Cops::Parser
       first
   end
 
-  def self.node2model(name_node, definition_node, table_prefix) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+  def self.node2model(name_node, definition_node, table_prefix) # rubocop:disable Metrics/PerceivedComplexity
     return if definition_node.ast_search('(send self :abstract_class= true)')&.any?
 
     # If all children are classes/modules -- model is here only as a namespace, shouldn't be
