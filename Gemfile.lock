@@ -4,8 +4,8 @@ PATH
     the_schema_is (0.0.5)
       activesupport (>= 8.0.0.1)
       backports (>= 3.16.0)
-      memo_wise
-      memoist
+      memo_wise (>= 1.10.0)
+      memoist (>= 0.16.2)
       rubocop (>= 1.0.0)
 
 GEM
